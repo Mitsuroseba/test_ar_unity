@@ -7,7 +7,7 @@ using UnityEngine;
 using Application = UnityEngine.Application;
 using BuildResult = UnityEditor.Build.Reporting.BuildResult;
 
-public class Build
+public class Build : EditorWindow
 {
     static readonly string ProjectPath = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
 
@@ -16,6 +16,9 @@ public class Build
     static readonly string androidExportPath = Path.GetFullPath(Path.Combine(ProjectPath, "../../android/unityLibrary"));
     static readonly string iosExportPath = Path.GetFullPath(Path.Combine(ProjectPath, "../../ios/UnityLibrary"));
     static readonly string iosExportPluginPath = Path.GetFullPath(Path.Combine(ProjectPath, "../../ios_xcode/UnityLibrary"));
+
+    bool pluginMode = false;
+    static string persistentKey = "flutter-unity-widget-pluginMode";
 
     [MenuItem("Flutter/Export Android %&n", false, 1)]
     public static void DoBuildAndroidLibrary()
@@ -45,8 +48,7 @@ public class Build
 
         EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
 
-        var options = BuildOptions.AllowDebugging;
-        EditorUserBuildSettings.exportAsGoogleAndroidProject = true;
+        var options = BuildOptions.AcceptExternalModificationsToPlayer;
         var report = BuildPipeline.BuildPlayer(
             GetEnabledScenes(),
             apkPath,
@@ -106,6 +108,30 @@ public class Build
 
     }
 
+    [MenuItem("Flutter/Settings %&S", false, 5)]
+    public static void PluginSettings()
+    {
+        EditorWindow.GetWindow(typeof(Build));
+    }
+
+    void OnGUI()
+    {
+        GUILayout.Label("Flutter Unity Widget Settings", EditorStyles.boldLabel);
+
+        EditorGUI.BeginChangeCheck();
+        pluginMode = EditorGUILayout.Toggle("Plugin Mode", pluginMode);
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            EditorPrefs.SetBool(persistentKey, pluginMode);
+        }
+    }
+
+    private void OnEnable()
+    {
+      pluginMode = EditorPrefs.GetBool(persistentKey, false);
+    }
+
     private static void BuildIOS(String path)
     {
         if (Directory.Exists(path))
@@ -113,7 +139,7 @@ public class Build
 
         EditorUserBuildSettings.iOSBuildConfigType = iOSBuildType.Release;
 
-        var options = BuildOptions.AllowDebugging;
+        var options = BuildOptions.AcceptExternalModificationsToPlayer;
         var report = BuildPipeline.BuildPlayer(
             GetEnabledScenes(),
             path,
