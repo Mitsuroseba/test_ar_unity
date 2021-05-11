@@ -16,6 +16,7 @@ Links:
 - https://stackoverflow.com/questions/26024100/dyld-library-not-loaded-rpath-libswiftcore-dylib/26949219#26949219
 - https://github.com/wowmaking/react-native-unity/issues/20
 - https://tutorialsforar.com/how-to-use-plane-tracking-in-ar-and-place-objects-using-unity/
+- https://levelup.gitconnected.com/these-mistakes-can-make-your-ar-foundation-app-display-a-black-screen-3b5b505c28b1
 
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
