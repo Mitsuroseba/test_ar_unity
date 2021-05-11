@@ -17,14 +17,10 @@ public class ARTapToPlace : MonoBehaviour
     private Pose placementPose;
     private bool placementPoseIsValid = false;
 
-    void Awake()
-    {
-        m_RaycastManager = GetComponent<ARRaycastManager>();
-    }
-
     // Start is called before the first frame update
     void Start()
     {
+        m_RaycastManager = GetComponent<ARRaycastManager>();
         arOrigin = FindObjectOfType<ARSessionOrigin>();
     }
 
@@ -61,17 +57,21 @@ public class ARTapToPlace : MonoBehaviour
     	var screenCenter = Camera.current.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
     	var hits = new List<ARRaycastHit>();
 
-        m_RaycastManager.Raycast(screenCenter, hits, TrackableType.Planes);
-
+        Raycast(screenCenter, hits);
         placementPoseIsValid = hits.Count > 0;
+
         if (placementPoseIsValid)
         {
             placementPose = hits[0].pose;
 
-            var cameraForward = Camera.current.transform.forward;
-            var cameraBearing = new Vector3(cameraForward.x, 0, cameraForward.z).normalized;
-            placementPose.rotation = Quaternion.LookRotation(cameraBearing);
+//            var cameraForward = Camera.current.transform.forward;
+//            var cameraBearing = new Vector3(cameraForward.x, 0, cameraForward.z).normalized;
+//            placementPose.rotation = Quaternion.LookRotation(cameraBearing);
         }
     }
+        private void Raycast(Vector3 screenCenter, List<ARRaycastHit> hits)
+        {
+        m_RaycastManager.Raycast(screenCenter, hits, TrackableType.Planes);
+        }
 
 }
